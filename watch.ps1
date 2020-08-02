@@ -161,22 +161,3 @@ finally{
     $FileSystemWatcher.Dispose()
     "Event Handler Disabled."
 }
-
-
-# explorer $PathToMonitor
-# while($true){
-#     $Change = $FileSystemWatcher.WaitForChanged('All', 1000)
-#     if($Change.TimedOut -eq $false){
-
-#         #get information about the changes
-#         Write-Host "Change detected:"
-#         $Change | Out-Default
-
-#         #uncomment this to see the issue
-#         #Start-Sleep -Seconds 5
-
-#     }
-#     else{
-#         Write-Host "." -NoNewline
-#     }
-# }
