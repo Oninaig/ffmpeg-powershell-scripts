@@ -47,34 +47,20 @@ function RemuxToMp4{
     [parameter(Mandatory=$true)][string]$Path,
     [parameter(Mandatory=$true)][string]$OutputDirectory
   )
-
-  Write-Host "Remux-To-MP4"
-
+  
   $sourceFile = Get-Item $Path
   if($sourceFile.Extension -eq ".mp4"){
     Write-Host "File is already an MP4, returning..."
     return
   }
-  $sourceDirectory = $sourceFile.DirectoryName
-  $sourceFileWithoutExt = $sourceFile.BaseName
-  $fullPathWithoutExt = join-path $sourceDirectory $sourceFileWithoutExt
-  Write-Host ($fullPathWithoutExt)
 
-  $outputFilePath = Join-ArrayPath $OutputDirectory, "$sourceFileWithoutExt.mp4"
-
-  Write-Host ($outputFilePath)
-
+  $outputFilePath = Join-ArrayPath $OutputDirectory, "$($sourceFile.BaseName).mp4"
   $ArgumentList = "-i {0} -c copy -map 0 -video_track_timescale 60 {1}" -f $sourceFile, $outputFilePath
 
   Write-Host -ForegroundColor Green -Object $ArgumentList
 
-  # Pause the script until user hits enter
-  # $null = Read-Host -Prompt 'Press enter to continue, after verifying command line arguments.';
-
   # Start ffmpeg
-
   Start-Process -FilePath "E:\Tools\FFMPEG\ffmpeg.exe" -ArgumentList $ArgumentList -Wait -NoNewWindow
-
 }
 
 $PathToMonitor = "$PSScriptRoot\..\Input\"
@@ -114,14 +100,7 @@ $Action = {
             }
             RemuxToMp4 -Path $FullPath -OutputDirectory $OutputDirectory
         }
-        'Deleted' {"DELETED"         
-        # uncomment the below to mimick a time intensive handler
-        <#
-        Write-Host "Deletion Handler Start" -ForegroundColor Gray
-        Start-Sleep -Seconds 4    
-        Write-Host "Deletion Handler End" -ForegroundColor Gray
-        #>
-        }
+        'Deleted' {"DELETED"}
         'Renamed' {
             #this executes only when a file was renamed
             $text = "File {0} was renamed to {1}" -f $OldName, $Name
